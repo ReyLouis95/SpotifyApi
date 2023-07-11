@@ -1,6 +1,6 @@
 ﻿using SpotifyApi.Models.Spotify;
 
-namespace SpotifyApi.Services
+namespace SpotifyApi.Services.HttpClients
 {
     public interface ILoginApiSpotifyService
     {

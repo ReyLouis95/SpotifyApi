@@ -5,9 +5,9 @@ using SpotifyApi.Models.Spotify;
 using System.Net;
 using System.Net.Http.Json;
 
-namespace SpotifyApi.Services
+namespace SpotifyApi.Services.HttpClients
 {
-    public class LoginApiSpotifyService:ILoginApiSpotifyService
+    public class LoginApiSpotifyService : ILoginApiSpotifyService
     {
         private readonly HttpClient _httpClientLoginSpotify;
         private readonly SpotifyCredentials _credentials;
@@ -22,7 +22,7 @@ namespace SpotifyApi.Services
 
         public async Task<TokenSpotify> Authenticate()
         {
-            if(_token == null || string.IsNullOrEmpty(_token.AccessToken) || _token.ExpiresIn == null)
+            if (_token == null || string.IsNullOrEmpty(_token.AccessToken) || _token.ExpiresIn == null)
             {
                 await GetToken();
             }
@@ -43,12 +43,12 @@ namespace SpotifyApi.Services
                 { "client_secret", _credentials.ClientSecret },
             });
             HttpResponseMessage response = await _httpClientLoginSpotify.SendAsync(request);
-            if(response.StatusCode != HttpStatusCode.OK)
+            if (response.StatusCode != HttpStatusCode.OK)
             {
                 throw new HttpResponseException(response, await response.Content.ReadAsStringAsync());
             }
             TokenSpotify? tokenSpotify = await response.Content.ReadFromJsonAsync<TokenSpotify>();
-            if(tokenSpotify == null)
+            if (tokenSpotify == null)
             {
                 throw new ArgumentNullException(nameof(tokenSpotify));
             }
@@ -59,7 +59,7 @@ namespace SpotifyApi.Services
         private bool IsTokenValid()
         {
             double time = Convert.ToDouble(_token.ExpiresIn);
-            return !(DateTime.Now.AddSeconds(-1*time)>_lastUpdateToken);
+            return !(DateTime.Now.AddSeconds(-1 * time) > _lastUpdateToken);
         }
     }
 }
