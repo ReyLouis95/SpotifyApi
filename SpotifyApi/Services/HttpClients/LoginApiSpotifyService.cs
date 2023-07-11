@@ -14,10 +14,10 @@ namespace SpotifyApi.Services.HttpClients
         private TokenSpotify _token;
         private DateTime _lastUpdateToken;
 
-        public LoginApiSpotifyService(IHttpClientFactory httpClientFactory, IOptions<SpotifyCredentials> credentials)
+        public LoginApiSpotifyService(IHttpClientFactory httpClientFactory, SpotifyCredentials credentials)
         {
             _httpClientLoginSpotify = httpClientFactory.CreateClient("loginApiSpotify");
-            _credentials = credentials.Value;
+            _credentials = credentials;
         }
 
         public async Task<TokenSpotify> Authenticate()
