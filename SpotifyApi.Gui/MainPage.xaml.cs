@@ -5,12 +5,10 @@ namespace SpotifyApi.Gui
 {
     public partial class MainPage : ContentPage
     {
-        private readonly SpotifyCredentials _credentials;
         private readonly IApiSpotifyService _apiSpotifyService;
 
-        public MainPage(SpotifyCredentials credentials, IApiSpotifyService apiSpotifyService)
+        public MainPage(IApiSpotifyService apiSpotifyService)
         {
-            _credentials = credentials;
             _apiSpotifyService = apiSpotifyService;
             InitializeComponent();
 
@@ -19,7 +17,7 @@ namespace SpotifyApi.Gui
         private async void OnCounterClicked(object sender, EventArgs e)
         {
             string search = Search.Text;
-            string reponse = await _apiSpotifyService.Search(search);
+            var reponse = await _apiSpotifyService.Search(search);
 
             SemanticScreenReader.Announce(CounterBtn.Text);
         }
