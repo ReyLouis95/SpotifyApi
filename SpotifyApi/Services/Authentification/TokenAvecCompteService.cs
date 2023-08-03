@@ -20,9 +20,27 @@ public class TokenAvecCompteService : ITokenAvecCompteService
         _httpClientLoginSpotify = httpClientFactory.CreateClient("loginApiSpotify");
     }
 
-    public Task<(TokenSpotify?, DateTime)> GetRefreshToken()
+    public async Task<(TokenSpotify?, DateTime)> GetRefreshToken(string refreshToken)
     {
-        throw new NotImplementedException();
+        using HttpRequestMessage request = new(HttpMethod.Post, "token");
+        request.Content = new FormUrlEncodedContent(new Dictionary<string, string>
+        {
+            {"grant_type", "refresh_token"},
+            {"refresh_token", refreshToken},
+        });
+        HttpResponseMessage response = await _httpClientLoginSpotify.SendAsync(request);
+        if(response.StatusCode != HttpStatusCode.OK)
+        {
+            throw new HttpResponseException(response, await response.Content.ReadAsStringAsync());
+        }
+        TokenSpotify? tokenSpotify = await response.Content.ReadFromJsonAsync<TokenSpotify>();
+        if (tokenSpotify == null)
+        {
+            throw new ArgumentNullException(nameof(tokenSpotify));
+        }
+        tokenSpotify.RefreshToken = refreshToken;
+        tokenSpotify.ExpiresIn = 1;
+        return (tokenSpotify, DateTime.Now);
     }
 
     public async Task<(TokenSpotify?, DateTime)> GetToken(string code)
@@ -44,6 +62,7 @@ public class TokenAvecCompteService : ITokenAvecCompteService
         {
             throw new ArgumentNullException(nameof(tokenSpotify));
         }
+        tokenSpotify.ExpiresIn = 1;
         return (tokenSpotify, DateTime.Now);
     }
 

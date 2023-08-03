@@ -42,12 +42,18 @@ namespace SpotifyApi.Services.Authentification
 
         public async Task<TokenSpotify> AuthenticateAvecCompte()
         {
-            if (_token == null || string.IsNullOrEmpty(_token.AccessToken) || _token.ExpiresIn == null || !IsTokenValid())
+            if (_token == null || string.IsNullOrEmpty(_token.AccessToken) || _token.ExpiresIn == null)
             {
                 _webListener.StartListening();
                 _tokenAvecCompteService.OpenDialogAuthent(_spotifyConfiguration.UrlDialogAuthent);
                 string code = await _webListener.GetCode();
                 var resultat = await _tokenAvecCompteService.GetToken(code);
+                _token = resultat.Item1;
+                _lastUpdateToken = resultat.Item2;
+            }
+            else if(!IsTokenValid())
+            {
+                var resultat = await _tokenAvecCompteService.GetRefreshToken(_token.RefreshToken);
                 _token = resultat.Item1;
                 _lastUpdateToken = resultat.Item2;
             }
