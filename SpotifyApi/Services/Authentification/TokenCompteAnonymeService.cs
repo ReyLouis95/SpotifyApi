@@ -1,39 +1,25 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Diagnostics;
+using System.Net;
+using System.Net.Http.Json;
+using Microsoft.AspNetCore.WebUtilities;
 using SpotifyApi.Exceptions;
 using SpotifyApi.Models.Config;
 using SpotifyApi.Models.Spotify;
-using System.Net;
-using System.Net.Http.Json;
 
 namespace SpotifyApi.Services.HttpClients
 {
-    public class LoginApiSpotifyService : ILoginApiSpotifyService
+    public class TokenCompteAnonymeService : ITokenCompteAnonymeService
     {
         private readonly HttpClient _httpClientLoginSpotify;
         private readonly SpotifyCredentials _credentials;
-        private TokenSpotify _token;
-        private DateTime _lastUpdateToken;
 
-        public LoginApiSpotifyService(IHttpClientFactory httpClientFactory, SpotifyCredentials credentials)
+        public TokenCompteAnonymeService(IHttpClientFactory httpClientFactory, SpotifyCredentials credentials)
         {
             _httpClientLoginSpotify = httpClientFactory.CreateClient("loginApiSpotify");
             _credentials = credentials;
         }
 
-        public async Task<TokenSpotify> Authenticate()
-        {
-            if (_token == null || string.IsNullOrEmpty(_token.AccessToken) || _token.ExpiresIn == null)
-            {
-                await GetToken();
-            }
-            if (!IsTokenValid())
-            {
-                await GetToken();
-            }
-            return _token;
-        }
-
-        private async Task GetToken()
+        public async Task<(TokenSpotify, DateTime)> Authenticate()
         {
             using HttpRequestMessage request = new(HttpMethod.Post, "token");
             request.Content = new FormUrlEncodedContent(new Dictionary<string, string>
@@ -52,14 +38,7 @@ namespace SpotifyApi.Services.HttpClients
             {
                 throw new ArgumentNullException(nameof(tokenSpotify));
             }
-            _lastUpdateToken = DateTime.Now;
-            _token = tokenSpotify;
-        }
-
-        private bool IsTokenValid()
-        {
-            double time = Convert.ToDouble(_token.ExpiresIn);
-            return !(DateTime.Now.AddSeconds(-1 * time) > _lastUpdateToken);
+            return (tokenSpotify, DateTime.Now);
         }
     }
 }

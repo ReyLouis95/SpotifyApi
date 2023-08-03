@@ -8,5 +8,7 @@ namespace SpotifyApi.Models.Config
         public string UrlApiLoginSpotify { get;set; }
         [Required]
         public string UrlApiSpotify { get; set; }
+        [Required]
+        public string UrlDialogAuthent { get;set; }
     }
 }

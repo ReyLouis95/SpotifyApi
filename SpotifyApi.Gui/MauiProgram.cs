@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using SpotifyApi.Models.Config;
+using SpotifyApi.Services.Authentification;
 using SpotifyApi.Services.Handlers;
 using SpotifyApi.Services.HttpClients;
+using SpotifyApi.Services.Outils;
 using System.Reflection;
 
 namespace SpotifyApi.Gui
@@ -36,7 +38,11 @@ namespace SpotifyApi.Gui
             builder.Services.AddSingleton(spotifyConfiguration);
 
             builder.Services.AddTransient<MainPage>();
+            builder.Services.AddSingleton<ITokenCompteAnonymeService, TokenCompteAnonymeService>();
+            builder.Services.AddSingleton<ITokenAvecCompteService, TokenAvecCompteService>();
+            builder.Services.AddSingleton<IWebListener, WebListener>();
             builder.Services.AddSingleton<ILoginApiSpotifyService, LoginApiSpotifyService>();
+            builder.Services.AddSingleton<Base64Service>();
 
             builder.Services.AddScoped<IApiSpotifyService, ApiSpotifyService>();
 
@@ -50,8 +56,9 @@ namespace SpotifyApi.Gui
             }).AddHttpMessageHandler<LoginHandler>();
 
             builder.Services.AddTransient<LoginHandler>();
-
+            
             return builder.Build();
+
         }
     }
 }

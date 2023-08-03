@@ -11,7 +11,6 @@ namespace SpotifyApi.Gui
         {
             _apiSpotifyService = apiSpotifyService;
             InitializeComponent();
-
         }
 
         private async void OnCounterClicked(object sender, EventArgs e)

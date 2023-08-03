@@ -1,4 +1,5 @@
 ﻿using SpotifyApi.Models.Spotify;
+using SpotifyApi.Services.Authentification;
 using SpotifyApi.Services.HttpClients;
 using System.Net.Http.Headers;
 
@@ -15,7 +16,7 @@ namespace SpotifyApi.Services.Handlers
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            TokenSpotify token = await _loginApiSpotifyService.Authenticate();
+            TokenSpotify token = await _loginApiSpotifyService.AuthenticateAvecCompte();
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
             return await base.SendAsync(request, cancellationToken);
         }
