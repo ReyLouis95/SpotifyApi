@@ -49,14 +49,15 @@ namespace SpotifyApi.Gui
             builder.Services.AddHttpClient("loginApiSpotify", config =>
             {
                 config.BaseAddress = new Uri(spotifyConfiguration.UrlApiLoginSpotify);
-            });
+            }).AddHttpMessageHandler<AuthorizationHandler>();
             builder.Services.AddHttpClient("spotify", config =>
             {
                 config.BaseAddress = new Uri(spotifyConfiguration.UrlApiSpotify);
             }).AddHttpMessageHandler<LoginHandler>();
 
             builder.Services.AddTransient<LoginHandler>();
-            
+            builder.Services.AddTransient<AuthorizationHandler>();
+
             return builder.Build();
 
         }

@@ -13,13 +13,16 @@ public class TokenAvecCompteService : ITokenAvecCompteService
 {
     private readonly SpotifyCredentials _credentials;
     private readonly HttpClient _httpClientLoginSpotify;
-    private readonly Base64Service _base64Service;
 
-    public TokenAvecCompteService(SpotifyCredentials credentials, IHttpClientFactory httpClientFactory, Base64Service base64Service)
+    public TokenAvecCompteService(SpotifyCredentials credentials, IHttpClientFactory httpClientFactory)
     {
         _credentials = credentials;
         _httpClientLoginSpotify = httpClientFactory.CreateClient("loginApiSpotify");
-        _base64Service = base64Service;
+    }
+
+    public Task<(TokenSpotify?, DateTime)> GetRefreshToken()
+    {
+        throw new NotImplementedException();
     }
 
     public async Task<(TokenSpotify?, DateTime)> GetToken(string code)
@@ -31,8 +34,6 @@ public class TokenAvecCompteService : ITokenAvecCompteService
                 { "code",  code},
                 { "redirect_uri", _credentials.RedirectUrl },
             });
-        string clientIdClientSecretBase64 = Base64Service.Base64Encode($"{_credentials.ClientId}:{_credentials.ClientSecret}");
-        request.Headers.Authorization = new AuthenticationHeaderValue("Basic", clientIdClientSecretBase64);
         HttpResponseMessage response = await _httpClientLoginSpotify.SendAsync(request);
         if (response.StatusCode != HttpStatusCode.OK)
         {

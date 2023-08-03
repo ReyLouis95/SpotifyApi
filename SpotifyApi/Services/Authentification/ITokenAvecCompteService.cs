@@ -8,4 +8,5 @@ public interface ITokenAvecCompteService
 {
     void OpenDialogAuthent(string url);
     Task<(TokenSpotify?, DateTime)> GetToken(string code);
+    Task<(TokenSpotify?, DateTime)> GetRefreshToken();
 }
