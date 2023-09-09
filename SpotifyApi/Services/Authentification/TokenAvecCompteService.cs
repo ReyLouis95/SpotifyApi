@@ -39,7 +39,6 @@ public class TokenAvecCompteService : ITokenAvecCompteService
             throw new ArgumentNullException(nameof(tokenSpotify));
         }
         tokenSpotify.RefreshToken = refreshToken;
-        tokenSpotify.ExpiresIn = 1;
         return (tokenSpotify, DateTime.Now);
     }
 
@@ -62,7 +61,6 @@ public class TokenAvecCompteService : ITokenAvecCompteService
         {
             throw new ArgumentNullException(nameof(tokenSpotify));
         }
-        tokenSpotify.ExpiresIn = 1;
         return (tokenSpotify, DateTime.Now);
     }
 
@@ -74,6 +72,7 @@ public class TokenAvecCompteService : ITokenAvecCompteService
                 {"client_id", _credentials.ClientId},
                 {"response_type", "code" },
                 {"redirect_uri", _credentials.RedirectUrl },
+                {"scope", "user-read-private user-read-email user-top-read" }
             };
         Process.Start(new ProcessStartInfo(QueryHelpers.AddQueryString(url, queryParams)) { UseShellExecute = true });
     }

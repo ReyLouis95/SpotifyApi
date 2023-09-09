@@ -4,6 +4,8 @@ namespace SpotifyApi.Services.HttpClients
 {
     public interface IApiSpotifyService
     {
-        Task<IEnumerable<Artist>> Search(string search);
+        Task<IEnumerable<Artist>?> Search(string search);
+        Task<IEnumerable<Track>?> GetTopTracks();
+
     }
 }
